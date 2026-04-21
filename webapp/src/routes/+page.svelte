@@ -1,50 +1,15 @@
-<script lang="ts">
-  import { useConvexClient } from "convex-svelte";
-  import { api } from "$convex/api";
-
-  // Initialize the action hook
-  const client = useConvexClient();
-
-  let status = "Waiting for scan...";
-  let isLoading = false;
-
-  async function handleButtonClick() {
-    isLoading = true;
-    status = "Authenticating via Python...";
-
-    try {
-      // Manually sending a dummy QR string for testing the button
-      const result = await client.action(api.scanner.processQrCode, {});;
-      console.log(result)
-      const authStatus = result.response.authStatus
-
-      if (authStatus) {
-        status = "User authenticated"
-      } else {
-        status = "User is invalid"
-      }
-
-    } catch (err) {
-      console.error(err);
-      status = "Error: Could not reach the backend.";
-    } finally {
-      isLoading = false;
-    }
-  }
+<script>
+    import logo from '$lib/assets/mlb_logo.png';
 </script>
 
-<div class="p-8 flex flex-col gap-4">
-  <h1 class="text-xl font-bold">QR Authentication Tester</h1>
-  
-  <p class="p-4 bg-gray-100 rounded">
-    Status: <strong>{status}</strong>
-  </p>
-
-  <button 
-    onclick={handleButtonClick}
-    disabled={isLoading}
-    class="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-  >
-    {isLoading ? "Processing..." : "Simulate QR Scan"}
-  </button>
+<div class="from-mlb-blue/20 to-mlb-orange/20 flex h-screen flex-col items-center justify-center bg-linear-to-t">
+    <div class="bg-mlb-white m-6 w-80 rounded-xl p-5 flex flex-col items-center justify-center drop-shadow-md">
+        <img src={logo} alt="MaiLeBox logo" class="max-w-60 pt-5">
+        <p class="text-lg pt-8 font-extrabold"> Input Tracking Number </p>
+        <form class="flex flex-col p-3 items-center justify-center">
+            <input type="text" id="tracking_num" class="bg-mlb-gray/50 rounded-3xl py-1.5 px-2 text-center text-mlb-black">
+            <input type="submit" value="Submit" class="m-3 px-4 py-1.5 bg-mlb-orange rounded-2xl text-sm font-medium text-mlb-white hover:brightness-90 drop-shadow-sm">
+        </form>
+        <p class="text-sm text-mlb-black font-medium underline pt-10"> Log in as staff </p>
+	</div>
 </div>
