@@ -7,12 +7,12 @@
 	/* set Plus Jakarta Sans as default font */
 	--font-sans: 'Plus Jakarta Sans', sans-serif;
 
-    /* main color palette */
-    --color-mlb-orange: #FF7C00;
-    --color-mlb-blue: #1ECCE3;
-    --color-mlb-white: #FCFAF1;
-    --color-mlb-black: #3E3C49;
-    --color-mlb-gray: #DFDCD4;
+	/* main color palette */
+	--color-mlb-orange: #ff7c00;
+	--color-mlb-blue: #1ecce3;
+	--color-mlb-white: #fcfaf1;
+	--color-mlb-black: #3e3c49;
+	--color-mlb-gray: #dfdcd4;
 }
 
 @layer base {
