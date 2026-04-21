@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	/* set Plus Jakarta Sans as default font */
+	--font-sans: 'Plus Jakarta Sans', sans-serif;
+
+    /* main color palette */
+    --color-mlb-orange: #FF7C00;
+    --color-mlb-blue: #1ECCE3;
+    --color-mlb-white: #FCFAF1;
+    --color-mlb-black: #3E3C49;
+    --color-mlb-gray: #DFDCD4;
+}
+
+@layer base {
+	html {
+		font-family: var(--font-sans);
+	}
+}
