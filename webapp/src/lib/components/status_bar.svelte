@@ -4,8 +4,9 @@
 	import locker from '$lib/assets/icons/locker.svg';
 	import star from '$lib/assets/icons/star.svg';
 
-	let status = $state(2);
+	let stat = $props();
 	let states = ['In Transit', 'Sorting', 'In Locker', 'Claimed'];
+	let status = $derived(states.indexOf(stat.stat) + 1);
 </script>
 
 <div class="flex items-center w-full h-auto">
