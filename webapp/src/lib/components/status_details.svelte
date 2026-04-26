@@ -18,7 +18,7 @@
 	out:slide={{ duration: 300, axis: 'y' }}
 	class="absolute bg-mlb-white m-6 flex w-full h-full flex-col rounded-xl p-5 drop-shadow-md">
 
-    <div class="grid grid-cols-4">
+    <div class="grid grid-cols-4 py-3">
         <div
             class="border-mlb-orange flex w-1/2 aspect-square rounded-full border-3 border-solid items-center justify-center justify-self-center {status >= 1
                 ? 'opacity-100'
@@ -85,5 +85,5 @@
         </div>
     </div>
 
-    <button onclick={onClose} class="underline hover:text-mlb-orange"> Close </button>
+    <button onclick={onClose} class="underline pt-5 hover:text-mlb-orange"> Close </button>
 </div>

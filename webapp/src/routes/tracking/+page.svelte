@@ -21,7 +21,7 @@
 	class="from-mlb-blue/20 to-mlb-orange/20 flex h-screen flex-col items-center justify-center bg-linear-to-t"
 >	
 	<div
-		class="bg-mlb-white relative m-6 flex w-1/3 h-3/5 flex-col items-center justify-center rounded-xl p-5 drop-shadow-md"
+		class="bg-mlb-white relative m-6 flex w-1/3 flex-col items-center justify-center rounded-xl p-5 drop-shadow-md"
 	>
 		<img src={logo} alt="MaiLeBox logo" class="max-w-50 mt-4" />
 		<div class="flex w-full flex-col p-3 mt-4">
