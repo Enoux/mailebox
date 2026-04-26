@@ -1,5 +1,6 @@
 <script>
 	import logo from '$lib/assets/mlb_logo.png';
+	import Modal from '$lib/components/modal.svelte';
 	import StatusBar from '$lib/components/status_bar.svelte';
 	import StatusDetails from '$lib/components/status_details.svelte';
 
@@ -15,8 +16,22 @@
 	function handleClose() {
 		detailsOpen = false;
 	}
+
+	let otpCode = $state(["", "", "", "", ""]);
+	let isActive = $state(false);
+
+	function autoFocus(event) {
+		let val = event.target.value;
+		let new_id = `otp_${Number(event.target.id[4]) + 1}`;
+
+		// If not delete, move on to next field
+		if (val != "") {
+			document.getElementById(new_id)?.focus();
+		}
+	}
 </script>
 
+<!-- Main Tracking Panel -->
 <div
 	class="from-mlb-blue/20 to-mlb-orange/20 flex h-screen flex-col items-center justify-center bg-linear-to-t"
 >	
@@ -55,8 +70,41 @@
 
 		<button
 			class="bg-mlb-orange text-mlb-white m-3 rounded-2xl px-4 py-1.5 text-sm font-medium drop-shadow-sm hover:brightness-90"
+			onclick={() => {isActive = true}}
 		>
 			Unlock
 		</button>
 	</div>
 </div>
+
+<!-- OTP Modal -->
+{#snippet modal_content()}
+		<div class="text-center">
+			<h1 class="text-mlb-orange text-4xl font-bold mb-4">Unlock Locker X</h1>
+
+			<div id="otp_code" class="my-10">
+			<h2 class="text-mlb-black text-xl font-bold my-4">Enter OTP Code below:</h2>
+			{#each otpCode as _, i (i)}
+				<input 
+					id="otp_{i}" 
+					type="text" 
+					inputmode="numeric" 
+					maxlength="1" 
+					class="bg-mlb-gray p-4 mr-4 w-12 text-center rounded-xl font-bold" 
+					bind:value={otpCode[i]}
+					oninput={autoFocus}
+				/>
+			{/each}
+			</div>
+
+			<button
+				class="bg-mlb-orange text-mlb-white m-3 rounded-2xl px-7 py-3 text-l font-medium drop-shadow-sm hover:brightness-90"
+			>
+				Unlock
+			</button>
+		</div>
+		{/snippet}
+
+{#if isActive}
+	<Modal {modal_content} bind:active={isActive} />
+{/if}
