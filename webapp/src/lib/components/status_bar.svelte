@@ -10,7 +10,7 @@
 
 <div class="flex items-center w-full h-auto">
 	<div
-		class="border-mlb-orange ml-2 flex size-1/4 rounded-full border-3 border-solid items-center place-content-center {status >= 1
+		class="border-mlb-orange ml-2 flex size-1/4 aspect-square rounded-full border-3 border-solid items-center place-content-center {status >= 1
 			? 'opacity-100'
 			: 'opacity-50'}"
 	>
@@ -20,7 +20,7 @@
 	<div class="bg-mlb-blue h-1 w-1/8 {status >= 2 ? 'opacity-100' : 'opacity-50'}"></div>
 
 	<div
-		class="border-mlb-orange flex size-1/4 rounded-full border-3 border-solid items-center place-content-center {status >= 2
+		class="border-mlb-orange flex size-1/4 aspect-square rounded-full border-3 border-solid items-center place-content-center {status >= 2
 			? 'opacity-100'
 			: 'opacity-50'}"
 	>
@@ -30,7 +30,7 @@
 	<div class="bg-mlb-blue h-1 w-1/8 {status >= 3 ? 'opacity-100' : 'opacity-50'}"></div>
 
 	<div
-		class="border-mlb-orange flex size-1/4 rounded-full border-3 border-solid items-center place-content-center {status >= 3
+		class="border-mlb-orange flex size-1/4 aspect-square rounded-full border-3 border-solid items-center place-content-center {status >= 3
 			? 'opacity-100'
 			: 'opacity-50'}"
 	>
@@ -40,7 +40,7 @@
 	<div class="bg-mlb-blue h-1 w-1/8 {status >= 4 ? 'opacity-100' : 'opacity-50'}"></div>
 
 	<div
-		class="border-mlb-orange mr-2 flex size-1/4 rounded-full border-3 border-solid items-center place-content-center {status >= 4
+		class="border-mlb-orange mr-2 flex size-1/4 aspect-square rounded-full border-3 border-solid items-center place-content-center {status >= 4
 			? 'opacity-100'
 			: 'opacity-50'}"
 	>
