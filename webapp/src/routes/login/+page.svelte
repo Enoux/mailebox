@@ -17,14 +17,14 @@
 			<input
 				type="email"
 				id="email"
-				class="bg-mlb-gray/50 text-mlb-black mb-4 rounded-3xl px-4 py-1.5 border-1 border-white hover:border-mlb-orange/60"
+				class="bg-mlb-gray/50 text-mlb-black hover:border-mlb-orange/60 mb-4 rounded-3xl border-1 border-white px-4 py-1.5"
 				placeholder="johndoe@company.com"
 			/>
 			<label for="password" class="mb-1 text-left"> Password </label>
 			<input
 				type="password"
 				id="password"
-				class="bg-mlb-gray/50 text-mlb-black mb-4 rounded-3xl px-4 py-1.5 border-1 border-white hover:border-mlb-orange/60"
+				class="bg-mlb-gray/50 text-mlb-black hover:border-mlb-orange/60 mb-4 rounded-3xl border-1 border-white px-4 py-1.5"
 			/>
 
 			<input
@@ -34,6 +34,8 @@
 			/>
 		</form>
 
-		<p class="text-mlb-black pt-8 text-sm font-medium underline hover:font-bold">Sign in with Google</p>
+		<p class="text-mlb-black pt-8 text-sm font-medium underline hover:font-bold">
+			Sign in with Google
+		</p>
 	</div>
 </div>
