@@ -1,6 +1,21 @@
 <script>
 	import logo from '$lib/assets/mlb_logo.png';
 	// import { resolve } from '$app/paths';
+
+	import { authClient } from '$lib/auth-client';
+	import { api } from '$convex/_generated/api';
+	import { useQuery } from '@mmailaender/convex-svelte';
+	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
+
+	let { data } = $props();
+
+	// Auth state store
+	const auth = useAuth();
+	const isLoading = $derived(auth.isLoading);
+	const isAuthenticated = $derived(auth.isAuthenticated);
+	
+	const currentUserResponse = useQuery(api.auth.getCurrentUser, () => (isAuthenticated ? {} : 'skip'));
+	let user = $derived(currentUserResponse.data);
 </script>
 
 <div
