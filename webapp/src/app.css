@@ -13,6 +13,10 @@
 	--color-mlb-white: #fcfaf1;
 	--color-mlb-black: #3e3c49;
 	--color-mlb-gray: #dfdcd4;
+
+	/* highlight colors */
+	--color-mlb-green: #34ac29;
+	--color-mlb-red: #f03e3e;
 }
 
 @layer base {
