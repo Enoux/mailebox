@@ -7,6 +7,7 @@
 
 	import Modal from '$lib/components/modal.svelte';
 	import Navbar from '$lib/components/navbar.svelte';
+    import TableRow from '$lib/components/table_row.svelte';
 
 	let searchValue = $state('');
 

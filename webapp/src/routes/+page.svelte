@@ -24,6 +24,6 @@
 				class="bg-mlb-orange text-mlb-white m-3 my-6 w-1/3 rounded-2xl px-4 py-2 text-sm font-medium drop-shadow-sm hover:brightness-90"
 			/>
 		</form>
-		<p class="text-mlb-black pt-8 text-sm font-medium underline hover:font-bold">Log in as staff</p>
+		<a href={resolve(`/login`)} class="text-mlb-black pt-8 text-sm font-medium underline hover:font-bold">Log in as staff</a>
 	</div>
 </div>
