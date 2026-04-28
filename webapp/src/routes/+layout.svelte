@@ -1,13 +1,13 @@
 <script lang="ts">
-	import './layout.css';
-	import { PUBLIC_CONVEX_URL } from '$env/static/public';
-	import { setupConvex } from 'convex-svelte';
 	import '../app.css';
+	import './layout.css';
+	import { createSvelteAuthClient } from '@mmailaender/convex-better-auth-svelte/svelte'; 
+	import { authClient } from '$lib/auth-client';
+	
+	// This already includes the setupConvex() function
+	createSvelteAuthClient({ authClient }); 
 
 	let { children } = $props();
-
-	// This provides the Convex client to all child components
-	setupConvex(PUBLIC_CONVEX_URL);
 </script>
 
 {@render children()}
