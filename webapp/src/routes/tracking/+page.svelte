@@ -90,7 +90,7 @@
 
 		<div id="otp_code" class="my-10">
 			<h2 class="text-mlb-black my-4 text-xl font-bold">Enter OTP Code below:</h2>
-			{#each otpCode as _, i (i)}
+			{#each otpCode, i (i)}
 				<input
 					id="otp_{i}"
 					type="text"

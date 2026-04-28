@@ -2,6 +2,6 @@
 	import Navbar from '$lib/components/navbar.svelte';
 </script>
 
-<div class="h-screen w-screen bg-mlb-gray/30">
-	<Navbar/>
+<div class="bg-mlb-gray/30 h-screen w-screen">
+	<Navbar />
 </div>
