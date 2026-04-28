@@ -9,6 +9,10 @@
 	import Navbar from '$lib/components/navbar.svelte';
     import TableRow from '$lib/components/table_row.svelte';
 
+	import { useQuery } from 'convex-svelte';
+	import { api } from '$convex/api.js';
+  	const mailboxes = useQuery(api.mailboxes.getMailboxes, {});
+
 	let searchValue = $state('');
 
 	let isNavbarActive = $state(true);
@@ -101,13 +105,15 @@
 
 		<!-- Content (Actual Logs) -->
 		<div class="flex h-8/10 w-full flex-row flex-wrap overflow-auto">
-			<TableRow />
-            <TableRow />
-            <TableRow />
-            <TableRow />
-            <TableRow />
-            <TableRow />
-            <TableRow />
+			{#if mailboxes.isLoading}
+			<p>Loading...</p>
+			{:else if mailboxes.error}
+			<p>{mailboxes.error.message}</p>
+			{:else}
+				{#each mailboxes.data as mailbox (mailbox.locker_num)} 
+				<TableRow locker_num={mailbox.locker_num} consignee_name={mailbox.recipient_name} delivered_date={mailbox.delivered_by} claim_by={mailbox.claim_by}/>
+				{/each}
+			{/if}
 		</div>
 	</div>
 </div>
