@@ -1,6 +1,6 @@
 <script>
 	import logo from '$lib/assets/mlb_logo.png';
-	// import { resolve } from '$app/paths';
+	import { resolve } from '$app/paths';
 </script>
 
 <div
