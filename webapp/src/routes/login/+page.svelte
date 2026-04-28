@@ -32,10 +32,14 @@
 				value="Log in"
 				class="bg-mlb-orange text-mlb-white m-3 rounded-2xl px-4 py-1.5 text-sm font-medium drop-shadow-sm hover:brightness-90"
 			/>
+
+			<button class="bg-mlb-white border border-mlb-orange text-mlb-orange mx-3 my-1 rounded-2xl px-4 py-1.5 text-sm font-medium drop-shadow-sm hover:brightness-95">
+				Sign in with Google
+			</button>
 		</form>
 
-		<p class="text-mlb-black pt-8 text-sm font-medium underline hover:font-bold">
-			Sign in with Google
-		</p>
+		<a href="/" class="text-mlb-black pt-3 text-sm font-medium underline hover:font-bold">
+			Back to claim
+		</a>
 	</div>
 </div>
