@@ -2,10 +2,11 @@
 	import logo from '$lib/assets/mlb_logo.png';
 	// import { resolve } from '$app/paths';
 
-	import { authClient } from '$lib/auth-client';
-	import { api } from '$convex/_generated/api';
+	import { authClient } from '$lib/auth-client.js';
+	import { api } from '$convex/_generated/api.js';
 	import { useQuery } from '@mmailaender/convex-svelte';
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
+	import { redirect } from '@sveltejs/kit';
 
 	let { data } = $props();
 
@@ -13,9 +14,29 @@
 	const auth = useAuth();
 	const isLoading = $derived(auth.isLoading);
 	const isAuthenticated = $derived(auth.isAuthenticated);
-	
+
 	const currentUserResponse = useQuery(api.auth.getCurrentUser, () => (isAuthenticated ? {} : 'skip'));
 	let user = $derived(currentUserResponse.data);
+
+	let name = $state('admin')
+	let email = $state('');
+	let password = $state('');
+
+	async function handlePasswordSubmit(event) {
+		event.preventDefault();
+		try {
+			await authClient.signIn.email(
+				{ email, password, callbackURL:'/admin' },
+				{
+					onError: (ctx) => {
+						alert("Authentication error:", ctx.error.message)
+					}
+				}
+			);
+		} catch (error) {
+			console.error('Authentication error:', error);
+		}
+	}
 </script>
 
 <div
@@ -27,17 +48,20 @@
 		<img src={logo} alt="MaiLeBox logo" class="max-w-60 pt-5" />
 		<p class="pt-8 text-lg font-extrabold">Welcome!</p>
 
-		<form class="flex w-full flex-col p-5">
+		<form onsubmit={handlePasswordSubmit} class="flex w-full flex-col p-5">
 			<label for="email" class="mb-1 text-left"> Email </label>
 			<input
 				type="email"
+				bind:value={email}
 				id="email"
 				class="bg-mlb-gray/50 text-mlb-black hover:border-mlb-orange/60 mb-4 rounded-3xl border-1 border-white px-4 py-1.5"
 				placeholder="johndoe@company.com"
+				required
 			/>
 			<label for="password" class="mb-1 text-left"> Password </label>
 			<input
 				type="password"
+				bind:value={password}
 				id="password"
 				class="bg-mlb-gray/50 text-mlb-black hover:border-mlb-orange/60 mb-4 rounded-3xl border-1 border-white px-4 py-1.5"
 			/>
