@@ -44,7 +44,7 @@
 
 		try {
 			// Manually sending a dummy QR string for testing the button
-			const result = await client.action(api.scanner.processQrCode, {});;
+			const result = await client.action(api.scanner.processOTP, {});;
 			console.log(result)
 			const authStatus = result.response.authStatus
 
