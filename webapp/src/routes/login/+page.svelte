@@ -29,7 +29,7 @@
 				{ email, password, callbackURL:'/admin' },
 				{
 					onError: (ctx) => {
-						alert("Authentication error:", ctx.error.message)
+						alert("Authentication error:" + ctx.error.message)
 					}
 				}
 			);
