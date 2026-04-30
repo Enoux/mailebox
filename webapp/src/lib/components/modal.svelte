@@ -11,7 +11,7 @@
 			<img src={x} alt="Close Modal" />
 		</button>
 
-		<div class="m-2 w-full justify-center items-center">
+		<div class="m-auto flex w-full justify-center items-center">
 			{@render modal_content()}
 		</div>
 	</div>
