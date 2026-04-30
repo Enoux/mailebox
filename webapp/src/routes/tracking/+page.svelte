@@ -5,6 +5,7 @@
 	import StatusDetails from '$lib/components/status_details.svelte';
 	import { useConvexClient } from "convex-svelte";
 	import { api } from "$convex/_generated/api";
+	import { onMount } from "svelte";
 
 	let {
 		tracking_num = 'RR123456785PH',
@@ -19,7 +20,7 @@
 		detailsOpen = false;
 	}
 
-	let otpCode = $state(['', '', '', '', '']);
+	let otpCode = $state(['', '', '', '', '', '']);
 	let isActive = $state(false);
 
 	function autoFocus(event) {
@@ -35,18 +36,65 @@
 	// Initialize the action hook
 	const client = useConvexClient();
 
-	let otpStatus = "";
+	let otpStatus = $state("");
 	let isLoading = $state(false);
+	let currentScan =$state(null);
+
+	async function fetchScan() {
+		try {
+			const result = await client.action(api.scanner.syncScan, {});
+			if (result.scan) {
+				currentScan = result.scan;
+			}
+		} catch (err) {
+			console.error("Failed to sync scan:", err);
+		}
+	}
+
+	onMount(() => {
+		fetchScan();
+	});
+
+	function isScanExpired(scan) {
+		const threeMinutes = 3 * 60 * 1000;
+		return Date.now() - (scan.scanned_at * 1000) > threeMinutes;
+	}
 
 	async function handleButtonClick() {
 		isLoading = true;
+		otpStatus = "";
 		status = "Authenticating via Python...";
+
+		if(!currentScan) {
+			otpStatus = "Please scan first."
+			isLoading = false;
+			return;
+		}
+
+		if (isScanExpired(currentScan)) {
+			otpStatus = "Scan expired. Please scan again.";
+			currentScan = null; // clear it
+			isLoading = false;
+			return;
+		}
+
+		const otp = otpCode.join('');
+		if (otp.length !== 6) {
+			otpStatus = "Please enter a 6-digit OTP.";
+			isLoading = false;
+			return;
+		}
 
 		try {
 			// Manually sending a dummy QR string for testing the button
-			const result = await client.action(api.scanner.processQrCode, {});;
+			const result = await client.action(api.scanner.verifyOtp, {
+				uin: currentScan!.uin,
+				otp: otp,
+				transaction_id: currentScan.transaction_id
+			});
+
 			console.log(result)
-			const authStatus = result.response.authStatus
+			const authStatus = result
 
 		if (authStatus) {
 			otpStatus = "Unlocked"
@@ -144,13 +192,6 @@
 				{isLoading ? "Processing..." : "Unlock"}
 			</button>
 			<p>{otpStatus}</p>
-		</div>
-
-		<button
-			class="bg-mlb-orange text-mlb-white text-l m-3 rounded-2xl px-7 py-3 font-medium drop-shadow-sm hover:brightness-90"
-		>
-			Unlock
-		</button>
 	</div>
 {/snippet}
 

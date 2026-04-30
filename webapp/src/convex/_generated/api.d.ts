@@ -10,6 +10,7 @@
 
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as mailboxes from "../mailboxes.js";
 import type * as mqtt from "../mqtt.js";
 import type * as scanner from "../scanner.js";
 
@@ -22,6 +23,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
+  mailboxes: typeof mailboxes;
   mqtt: typeof mqtt;
   scanner: typeof scanner;
 }>;

@@ -10,4 +10,10 @@ export default defineSchema({
     claim_by: v.string(),
     status: v.string(),
   }),
+  scans: defineTable({
+    uin: v.string(),
+    transaction_id: v.string(),
+    status: v.string(),
+    scanned_at: v.number(),
+  }).index("by_uin", ["uin"]),
 });
