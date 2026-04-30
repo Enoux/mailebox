@@ -4,7 +4,7 @@
 	import StatusBar from '$lib/components/status_bar.svelte';
 	import StatusDetails from '$lib/components/status_details.svelte';
 	import { useConvexClient } from "convex-svelte";
-	import { api } from "$convex/_generated/api";
+	import { api } from "$convex/_generated/api.js";
 	import { onMount } from "svelte";
 
 	let {
