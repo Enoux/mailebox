@@ -54,44 +54,48 @@
 <div class="bg-mlb-gray/30 relative flex h-screen w-screen flex-row">
 	<Navbar bind:active={isNavbarActive} />
 
-	<div class="z-0 flex flex-row flex-wrap px-16 py-12 {isNavbarActive ? 'w-4/5' : 'w-full'}">
+	<div class="z-0 flex flex-col pl-16 pr-12 py-12 {isNavbarActive ? 'w-4/5' : 'w-full'}">
 		<!-- Title & Utilities -->
-		<div class="text-mlb-black flex h-1/10 w-3/5 text-3xl font-bold">Mailboxes</div>
+		<div class="text-mlb-black flex flex-row h-1/10 mb-2 pr-4">
+			<div class="w-3/5 text-3xl font-bold place-content-center">
+				Mailboxes
+			</div>
 
-		<div class="flex h-1/10 w-2/5">
-			<button class="flex w-1/10 place-content-center">
-				<img src={filter} class="max-w-8" alt="Filter" />
-			</button>
-
-			<button class="flex w-1/10 place-content-center">
-				<img src={sort} class="max-w-8" alt="Sort" />
-			</button>
-
-			<button class="bg-mlb-gray/50 m-4 flex w-3/5 flex-row rounded-full px-4 py-2">
-				<img src={search} class="s-1/5 mr-2 flex" alt="Search" />
-				<input
-					type="text"
-					placeholder="Search..."
-					class="flex w-7/8 text-sm"
-					bind:value={searchValue}
-				/>
-			</button>
-
-			<div class="flex w-1/4 place-content-center items-center">
-				<button
-					class="bg-mlb-orange/90 text-mlb-white flex place-content-center items-center rounded-3xl px-4 py-2 font-bold hover:brightness-90"
-					onclick={() => {
-						isAddLockerActive = true;
-					}}
-				>
-					<img src={add} class="max-w-8" alt="Add" />
-					<img src={locker} class="max-w-8" alt="Mailbox" />
+			<div class="flex w-2/5">
+				<button class="flex w-1/10 place-content-center">
+					<img src={filter} class="max-w-8" alt="Filter" />
 				</button>
+
+				<button class="flex w-1/10 place-content-center">
+					<img src={sort} class="max-w-8" alt="Sort" />
+				</button>
+
+				<button class="bg-mlb-gray/50 m-4 flex w-3/5 flex-row rounded-full px-4 py-2">
+					<img src={search} class="s-1/5 mr-2 flex" alt="Search" />
+					<input
+						type="text"
+						placeholder="Search..."
+						class="flex w-7/8 text-sm"
+						bind:value={searchValue}
+					/>
+				</button>
+
+				<div class="flex w-1/4 place-content-center items-center">
+					<button
+						class="bg-mlb-orange/90 text-mlb-white flex place-content-center items-center rounded-3xl px-4 py-2 font-bold hover:brightness-90"
+						onclick={() => {
+							isAddLockerActive = true;
+						}}
+					>
+						<img src={add} class="max-w-8" alt="Add" />
+						<img src={locker} class="max-w-8" alt="Mailbox" />
+					</button>
+				</div>
 			</div>
 		</div>
 
 		<!-- Header for the Logs -->
-		<div class="mb-4 flex w-full flex-row">
+		<div class="mb-4 flex w-full flex-row pr-4">
 			<div class="w-1/8 content-center text-center text-lg font-bold">Locker Number</div>
 
 			<div class="w-1/4 content-center text-center text-lg font-bold">Recipient</div>
@@ -100,18 +104,24 @@
 
 			<div class="w-1/4 content-center text-center text-lg font-bold">Claim By</div>
 
-			<div class="w-1/8 content-center text-center text-lg font-bold"></div>
+			<div class="w-1/8 content-center text-center text-lg font-bold">Status</div>
 		</div>
 
 		<!-- Content (Actual Logs) -->
-		<div class="flex h-8/10 w-full flex-row flex-wrap overflow-auto">
+		<div class="flex h-8/10 w-full flex-col overflow-auto pr-4">
 			{#if mailboxes.isLoading}
 			<p>Loading...</p>
 			{:else if mailboxes.error}
-			<p>{mailboxes.error.message}</p>
+			<p>failed to load: {mailboxes.error.toString()}</p>
 			{:else}
-				{#each mailboxes.data as mailbox (mailbox.locker_num)} 
-				<TableRow locker_num={mailbox.locker_num} consignee_name={mailbox.recipient_name} delivered_date={mailbox.delivered_by} claim_by={mailbox.claim_by}/>
+				{#each mailboxes.data as mailbox (mailbox.locker_number)} 
+				<TableRow 
+					locker_num={mailbox.locker_number.toString()} 
+					recipient_uid={mailbox.recipient_name} 
+					delivered_date={mailbox.delivered_by} 
+					claim_by={mailbox.claim_by} 
+					status={mailbox.status}
+				/>
 				{/each}
 			{/if}
 		</div>
