@@ -5,6 +5,7 @@ export default defineSchema({
   mailboxes: defineTable({
     locker_number: v.float64(),
     recipient_uid: v.string(),
+    parcel_id: v.string(),
     status: v.string(),
   }).index("by_locker_number", ["locker_number"]),
   parcels: defineTable({
