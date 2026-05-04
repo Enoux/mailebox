@@ -63,8 +63,7 @@ export const addParcelToLocker = mutation({
         })
 
         await ctx.db.patch(parcel._id, {
-			in_locker_by: new Date().toISOString(),
-			status: 'In Storage'
+			status: 'In Locker'
 		});
 
 		return { success: true };
