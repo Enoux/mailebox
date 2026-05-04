@@ -11,7 +11,7 @@
 
 	import { useQuery } from 'convex-svelte';
 	import { api } from '$convex/_generated/api.js';
-	const parcels = useQuery(api.courier.getParcelsForCourier, {courier_id: "smthng smthng id"});
+	const parcels = useQuery(api.courier.getParcelsForCourier, { courier_id: 'smthng smthng id' });
 
 	let searchValue = $state('');
 
@@ -24,7 +24,7 @@
 	<div class="z-0 flex w-full flex-col overflow-x-auto py-6 pr-2 pl-6 md:pr-12 md:pl-16">
 		<!-- <img src={logo} alt="MaiLeBox logo" class="max-w-40 pt-5" /> -->
 
-		<div class="text-mlb-black mb-2 flex h-1/10 min-w-[700px] w-full flex-row pr-4">
+		<div class="text-mlb-black mb-2 flex h-1/10 w-full min-w-[700px] flex-row pr-4">
 			<div class="place-content-center text-3xl font-bold">Parcels</div>
 
 			<div class="ml-auto flex">
@@ -49,11 +49,16 @@
 		</div>
 
 		<div class="flex flex-row items-center">
-			<input id="hideDelivered" type="checkbox" bind:checked={hideDelivered} class="w-4 h-4 accent-mlb-orange" />
+			<input
+				id="hideDelivered"
+				type="checkbox"
+				bind:checked={hideDelivered}
+				class="accent-mlb-orange h-4 w-4"
+			/>
 			<label for="hideDelivered" class="pl-2"> Hide Delivered Parcels </label>
 		</div>
 
-		<div class="mb-4 flex justify-center items-center min-w-[700px] flex-row">
+		<div class="mb-4 flex min-w-[700px] flex-row items-center justify-center">
 			<div class="w-1/4 content-center text-center text-lg font-bold">Parcel Number</div>
 
 			<div class="w-1/4 content-center text-center text-lg font-bold">Assigned Locker</div>
@@ -76,7 +81,7 @@
 			{:else}
 				{#each parcels.data as parcel (parcel.tracking_id)}
 					{#if hideDelivered}
-						{#if parcel.status == "For Delivery"}
+						{#if parcel.status == 'For Delivery'}
 							<TableRow
 								locker_num={parcel.mailbox_info.locker_number.toString()}
 								parcel_num={parcel.tracking_id.toString()}

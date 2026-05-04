@@ -10,11 +10,10 @@
 
 	let isOverrideActive = $state(false);
 
-	function handleClick(){
-		if (status == 'In Locker' || status == 'Claimed'){
+	function handleClick() {
+		if (status == 'In Locker' || status == 'Claimed') {
 			return;
-		}
-		else {
+		} else {
 			isOverrideActive = true;
 		}
 	}
