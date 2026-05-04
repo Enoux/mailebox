@@ -9,10 +9,46 @@
 	import Navbar from '$lib/components/navbar.svelte';
 	import TableRow from '$lib/components/table_row_mailbox.svelte';
 
-	import { useQuery } from 'convex-svelte';
+	import { useQuery, useConvexClient } from 'convex-svelte';
 	import { api } from '$convex/_generated/api.js';
 	const mailboxes = useQuery(api.mailboxes.getMailboxes, {});
 
+	// first available locker
+	const freeLocker = useQuery(api.mailboxes.getFirstFreeMailbox, {});
+	// client so we can add parcel to locker
+	const client = useConvexClient();
+	// states for the modal and stuff
+	let trackingInput = $state('');
+	let errorMsg = $state('');
+	$effect(() => {
+		if (!isAddLockerActive) {
+			trackingInput = '';
+			errorMsg = '';
+		}
+	});
+
+	async function handleAddParcel() {
+		errorMsg = '';
+		if (!trackingInput.trim()) {
+			errorMsg = 'Input a tracking number';
+			return;
+		}
+		if (!freeLocker.data) {
+			errorMsg = 'No available lockers';
+			return;
+		}
+		
+		try {
+			await client.mutation(api.mailboxes.addParcelToLocker, {
+				locker_number: freeLocker.data,
+				tracking_id: trackingInput.trim()
+			})
+		} catch (err) {
+			errorMsg = err.message || 'Add parcel error';
+		}
+	}
+
+	
 	let searchValue = $state('');
 
 	let isNavbarActive = $state(true);
@@ -25,7 +61,16 @@
 		<h1 class="text-mlb-orange mb-4 text-4xl font-bold">Add Parcel to Locker</h1>
 
 		<div class="my-10">
-			<p class="mb-8 text-2xl font-bold">Insert Free Locker Number Here</p>
+			{#if freeLocker.isLoading}
+				<p class="mb-8 text-2xl font-bold">Searching free lockers...</p>
+			{:else if freeLocker.error}
+				<p class="mb-8 text-2xl font-bold">locker loading error</p>
+			{:else if freeLocker.data}
+				<p class="mb-8 text-2xl font-bold">Locker Number: {freeLocker.data}</p>
+			{:else}
+				<p class="mb-8 text-2xl font-bold">No available lockers</p>
+			{/if}
+
 			<form class="flex w-full flex-col items-center justify-center p-3">
 				<label for="tracking_num" class="w-full text-lg font-bold"
 					>Input Parcel Tracking Number Here:</label
@@ -35,12 +80,14 @@
 					id="tracking_num"
 					class="bg-mlb-gray/50 text-mlb-black hover:border-mlb-orange/60 mt-4 w-3/4 w-100 rounded-3xl border-1 border-white px-2 py-1.5 text-center"
 					placeholder="RR123456785PH"
+					bind:value={trackingInput}
 				/>
 			</form>
 		</div>
 
 		<button
 			class="bg-mlb-orange text-mlb-white text-l m-3 rounded-2xl px-7 py-3 font-medium drop-shadow-sm hover:brightness-90"
+			onclick={handleAddParcel}
 		>
 			Add
 		</button>
