@@ -5,6 +5,7 @@ import type { DataModel } from "./_generated/dataModel.d.ts";
 import { query } from "./_generated/server.js";
 import { betterAuth, type BetterAuthOptions } from "better-auth/minimal";
 import authConfig from "./auth.config.ts";
+import { v } from "convex/values";
 
 const siteUrl = process.env.SITE_URL!;
 
@@ -36,3 +37,16 @@ export const getCurrentUser = query({
     return authComponent.getAuthUser(ctx);
   },
 });
+
+export const getUserRole = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = authComponent.getAuthUser(ctx);
+    const id = (await user)._id;
+    
+    const role = await ctx.db.query("userRoles").withIndex("by_uin", (q) => q.eq("uin", id)).first();
+
+    console.log(role);
+    return role;
+  }
+})
