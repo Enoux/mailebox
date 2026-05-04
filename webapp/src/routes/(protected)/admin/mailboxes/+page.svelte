@@ -43,6 +43,7 @@
 				locker_number: freeLocker.data,
 				tracking_id: trackingInput.trim()
 			})
+			isAddLockerActive = false;
 		} catch (err) {
 			errorMsg = err.message || 'Add parcel error';
 		}
