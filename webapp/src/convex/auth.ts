@@ -4,7 +4,7 @@ import { components } from "./_generated/api.js";
 import type { DataModel } from "./_generated/dataModel.d.ts";
 import { query } from "./_generated/server.js";
 import { betterAuth, type BetterAuthOptions } from "better-auth/minimal";
-import authConfig from "./auth.config.ts";
+import authConfig from "./auth.config";
 import { v } from "convex/values";
 
 const siteUrl = process.env.SITE_URL!;

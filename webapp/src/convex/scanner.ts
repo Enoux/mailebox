@@ -1,7 +1,7 @@
 // convex/scanner.ts
 import { action } from './_generated/server.js';
 
-const PYTHON_URL = 'http://0.0.0.0:8000';
+const PYTHON_URL = 'http://143.198.85.47:8000';
 
 export const syncScan = action({
 	handler: async (ctx) => {

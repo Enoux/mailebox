@@ -1,0 +1,18 @@
+services:
+  webapp:
+    build: ./webapp
+    container_name: mailebox-webapp
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - caddy_net
+    environment:
+      # - PUBLIC_CONVEX_URL=http://143.198.85:3210
+      # - PUBLIC_CONVEX_SITE_URL=http://143.198.85:3211
+      - PUBLIC_CONVEX_URL=https://valuable-horse-681.convex.cloud
+      - PUBLIC_CONVEX_SITE_URL=https://valuable-horse-681.convex.site
+
+networks:
+  caddy_net:
+    external: true
