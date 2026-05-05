@@ -81,7 +81,7 @@
 			{:else}
 				{#each parcels.data as parcel (parcel.tracking_id)}
 					{#if hideDelivered}
-						{#if parcel.status == 'For Delivery'}
+						{#if parcel.status == 'Sorting'}
 							<TableRow
 								locker_num={parcel.mailbox_info.locker_number.toString()}
 								parcel_num={parcel.tracking_id.toString()}

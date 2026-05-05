@@ -19,53 +19,53 @@ export const getMailboxes = query({
 });
 
 export const getFirstFreeMailbox = query({
-    args: {},
-    handler: async (ctx) => {
-        const mailbox = await ctx.db
-            .query('mailboxes')
-            .filter((q) => q.eq(q.field('status'), 'Available'))
-            .first();
-        
-        return mailbox?.locker_number ?? null;
-    }
+	args: {},
+	handler: async (ctx) => {
+		const mailbox = await ctx.db
+			.query('mailboxes')
+			.filter((q) => q.eq(q.field('status'), 'Available'))
+			.first();
+
+		return mailbox?.locker_number ?? null;
+	}
 });
 
 export const addParcelToLocker = mutation({
-    args: { locker_number: v.float64(), tracking_id: v.string() },
-    handler: async (ctx, args) => {
-        const parcel = await ctx.db
-            .query('parcels')
-            .filter((q) => q.eq(q.field('tracking_id'), args.tracking_id))
-            .first();
-        
-        if (!parcel) {
-            throw new Error("Parcel tracking number not found");
-        }
+	args: { locker_number: v.float64(), tracking_id: v.string() },
+	handler: async (ctx, args) => {
+		const parcel = await ctx.db
+			.query('parcels')
+			.filter((q) => q.eq(q.field('tracking_id'), args.tracking_id))
+			.first();
 
-        const mailbox = await ctx.db
-            .query('mailboxes')
-            .filter((q) => q.eq(q.field('locker_number'), args.locker_number))
-            .first();
+		if (!parcel) {
+			throw new Error('Parcel tracking number not found');
+		}
 
-        if (!mailbox) {
-            throw new Error("Mailbox number not found");
-        }
+		const mailbox = await ctx.db
+			.query('mailboxes')
+			.filter((q) => q.eq(q.field('locker_number'), args.locker_number))
+			.first();
 
-        // edge case sanity checjk lang this should never happen since we use getFirstFreeMailbox beforehand
-        if (mailbox.status !== "Available") {
-            throw new Error("Mailbox not available");
-        }
+		if (!mailbox) {
+			throw new Error('Mailbox number not found');
+		}
 
-        await ctx.db.patch(mailbox._id, {
-            status: "Unavailable",
-            parcel_id: parcel._id,
-            recipient_uid: parcel.recipient_uid
-        })
+		// edge case sanity checjk lang this should never happen since we use getFirstFreeMailbox beforehand
+		if (mailbox.status !== 'Available') {
+			throw new Error('Mailbox not available');
+		}
 
-        await ctx.db.patch(parcel._id, {
-			status: 'In Locker'
+		await ctx.db.patch(mailbox._id, {
+			status: 'Unavailable',
+			parcel_id: parcel._id,
+			recipient_uid: parcel.recipient_uid
+		});
+
+		await ctx.db.patch(parcel._id, {
+			status: 'Sorting'
 		});
 
 		return { success: true };
-    }
-})
+	}
+});
