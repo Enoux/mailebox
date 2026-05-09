@@ -59,16 +59,18 @@
 		</div>
 
 		<div class="mb-4 flex min-w-[700px] flex-row items-center justify-center">
-			<div class="w-1/4 content-center text-center text-lg font-bold">Parcel Number</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Parcel Number</div>
 
-			<div class="w-1/4 content-center text-center text-lg font-bold">Assigned Locker</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Assigned Locker</div>
 
-			<div class="w-1/4 content-center text-center text-lg font-bold">Recipient</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Recipient</div>
 
-			<div class="w-1/4 content-center text-center text-lg font-bold">Status</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Status</div>
+
+			<div class="w-1/5 content-center text-center text-lg font-bold">Unlock</div>
 		</div>
 
-		<div class="flex h-8/10 w-full min-w-[700px] flex-col overflow-auto pr-4">
+		<div class="flex h-8/10 w-full min-w-[700px] flex-col overflow-auto">
 			<!-- <TableRow />
 			<TableRow />
 			<TableRow status='Claimed'/>
@@ -83,7 +85,7 @@
 					{#if hideDelivered}
 						{#if parcel.status == 'Sorting'}
 							<TableRow
-								locker_num={parcel.mailbox_info.locker_number.toString()}
+								locker_num={parcel.mailbox_info?.locker_number.toString() ?? "N/A"}
 								parcel_num={parcel.tracking_id.toString()}
 								recipient_uid={parcel.recipient_uid}
 								status={parcel.status}
@@ -91,7 +93,7 @@
 						{/if}
 					{:else}
 						<TableRow
-							locker_num={parcel.mailbox_info.locker_number.toString()}
+							locker_num={parcel.mailbox_info?.locker_number.toString() ?? "N/A"}
 							parcel_num={parcel.tracking_id.toString()}
 							recipient_uid={parcel.recipient_uid}
 							status={parcel.status}
