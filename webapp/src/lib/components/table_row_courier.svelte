@@ -19,26 +19,29 @@
 	}
 </script>
 
-<button
-	class="bg-mlb-white border-mlb-white hover:border-mlb-orange mb-2 flex h-1/12 w-full shrink-0 flex-row rounded-2xl border-2 hover:shadow-sm"
-	onclick={handleClick}
+<div
+	class="bg-mlb-white border-mlb-white hover:border-mlb-orange mb-2 flex h-1/10 w-full shrink-0 flex-row rounded-2xl border-2 hover:shadow-sm"
 >
-	<div class="w-1/4 content-center text-center font-bold">
+	<div class="w-1/5 content-center text-center font-bold">
 		{parcel_num}
 	</div>
 
-	<div class="w-1/4 content-center text-center">
+	<div class="w-1/5 content-center text-center">
 		{locker_num}
 	</div>
 
-	<div class="w-1/4 content-center text-center">
+	<div class="w-1/5 content-center text-center">
 		{recipient_uid}
 	</div>
 
-	<div class="w-1/4 content-center text-center">
+	<div class="w-1/5 content-center text-center">
 		{status}
 	</div>
-</button>
+
+	<div class="w-1/5 content-center text-center">
+		<button class="bg-mlb-orange text-mlb-white px-3 py-1 rounded-lg font-bold drop-shadow-sm enabled:hover:brightness-90 disabled:bg-mlb-gray" onclick={handleClick} disabled={status != "Sorting"}> Deliver </button>
+	</div>
+</div>
 
 <!-- Locker Override Modal -->
 {#snippet modal_content()}
