@@ -144,13 +144,15 @@
 		<div class="mb-4 flex w-full flex-row pr-4">
 			<div class="w-1/8 content-center text-center text-lg font-bold">Locker Number</div>
 
-			<div class="w-1/4 content-center text-center text-lg font-bold">Recipient ID</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Recipient ID</div>
 
-			<div class="w-1/4 content-center text-center text-lg font-bold">Delivered By</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Delivered By</div>
 
-			<div class="w-1/4 content-center text-center text-lg font-bold">Claim By</div>
+			<div class="w-1/5 content-center text-center text-lg font-bold">Claim By</div>
 
 			<div class="w-1/8 content-center text-center text-lg font-bold">Status</div>
+
+			<div class="w-1/5 content-center text-center text-lg font-bold">Unlock</div>
 		</div>
 
 		<!-- Content (Actual Logs) -->
