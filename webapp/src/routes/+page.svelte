@@ -1,6 +1,17 @@
 <script>
 	import logo from '$lib/assets/mlb_logo.png';
 	import { resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
+
+	let tracking_num = $state('');
+
+	async function openTracking(event) {
+		event.preventDefault();
+		const url = resolve(`/tracking`);
+		const params = new URLSearchParams({ tracking_num: tracking_num });
+		const fullURL = `${url}?${params.toString()}`;
+		goto(fullURL);
+	}
 </script>
 
 <div
@@ -11,12 +22,14 @@
 	>
 		<img src={logo} alt="MaiLeBox logo" class="max-w-60 pt-5" />
 		<p class="pt-14 text-lg font-extrabold">Input Tracking Number</p>
-		<form class="flex w-full flex-col items-center justify-center p-3">
+		<form class="flex w-full flex-col items-center justify-center p-3" onsubmit={openTracking}>
 			<input
 				type="text"
 				id="tracking_num"
 				class="bg-mlb-gray/50 text-mlb-black hover:border-mlb-orange/60 w-3/4 rounded-3xl border-1 border-white px-2 py-1.5 text-center"
 				placeholder="RR123456785PH"
+				bind:value={tracking_num}
+				required
 			/>
 			<input
 				type="submit"
