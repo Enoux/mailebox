@@ -19,6 +19,12 @@ export default defineSchema({
 		storage_date: v.float64(),
 		status: v.string()
 	}).index('by_recipient_parcel', ['recipient_uid', 'tracking_id']),
+	attempts: defineTable({
+		locker_number: v.float64(),
+		attempt_date: v.float64(),
+		uin: v.string(),
+		is_successful: v.boolean(),
+	}).index('by_locker_number', ['locker_number']),
 	scans: defineTable({
 		uin: v.string(),
 		transaction_id: v.string(),
