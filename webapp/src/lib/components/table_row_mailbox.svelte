@@ -19,41 +19,85 @@
 	} = $props();
 
 	// Calculation of Date Difference (for claiming)
-	var isClaimPeriodFinished,
-		hrs = $state(0),
-		days = $state(0),
-		date_deli,
-		date_claim,
-		output_deli = $state(''),
-		output_claim = $state('');
+	var isClaimPeriodFinished = $state(false),
+		date_deli = $derived.by(() => {
+			if (delivered_date != "N/A")
+				return new Date(parseInt(delivered_date));
+			else 
+				return "N/A";
+		}),
+		date_claim = $derived.by(() => {
+			if (claim_by != "N/A")
+				return new Date(parseInt(claim_by));
+			else
+				return "N/A";
+		}),
+		output_deli = $derived.by(() => {
+			if (date_deli != "N/A") 
+				return date_deli.toUTCString();
+			else
+				return "N/A";
+		}),
+		output_claim = $derived.by(() => {
+			if (date_claim != "N/A") {
+				return date_claim.toUTCString();
+			}
+			else
+				return "N/A";
+		}),
+		hrs = $derived.by(() => {
+			if (delivered_date != "N/A" && claim_by != "N/A") {
+				console.log("yipee");
+				let hrs = Math.floor((date_claim - date_deli) / 3600000);
+				
+				if (hrs < 0) {
+					hrs *= -1;
+					isClaimPeriodFinished = true;
+				}
 
-	if (delivered_date != 'N/A' && claim_by != 'N/A') {
-		date_deli = new Date(parseInt(delivered_date));
-		date_claim = new Date(parseInt(claim_by));
+				return hrs;
+			}
 
-		hrs = Math.floor((date_claim - date_deli) / 3600000);
-		days = Math.floor(hrs / 24);
+			return "N/A";
+		}),
+		days = $derived.by(() => {
+			if (delivered_date != "N/A" && claim_by != "N/A") {
+				let days = Math.floor(hrs/24);
+				if (isClaimPeriodFinished) 
+					days *= -1;
+				return days;
+			}
 
-		console.log(days);
+			return "N/A";
+		});
 
-		// Not yet past claiming deadline
-		if (hrs > 0) {
-			isClaimPeriodFinished = false;
-		}
+	// if (delivered_date != 'N/A' && claim_by != 'N/A') {
+	// 	date_deli = new Date(parseInt(delivered_date));
+	// 	date_claim = new Date(parseInt(claim_by));
 
-		// Past claiming deadline already
-		else {
-			isClaimPeriodFinished = true;
-			days *= -1;
-			hrs *= -1;
-		}
+	// 	hrs = Math.floor((date_claim - date_deli) / 3600000);
+	// 	days = Math.floor(hrs / 24);
 
-		output_deli = date_deli.toUTCString();
-		output_claim = date_claim.toUTCString();
-	} else {
-		output_deli = delivered_date;
-		output_claim = claim_by;
-	}
+	// 	console.log(days);
+
+	// 	// Not yet past claiming deadline
+	// 	if (hrs > 0) {
+	// 		isClaimPeriodFinished = false;
+	// 	}
+
+	// 	// Past claiming deadline already
+	// 	else {
+	// 		isClaimPeriodFinished = true;
+	// 		days *= -1;
+	// 		hrs *= -1;
+	// 	}
+
+	// 	output_deli = date_deli.toUTCString();
+	// 	output_claim = date_claim.toUTCString();
+	// } else {
+	// 	output_deli = delivered_date;
+	// 	output_claim = claim_by;
+	// }
 
 	// console.log(`Past Deadline? ${isClaimPeriodFinished}, days: ${days}, hours: ${hrs}`);
 
