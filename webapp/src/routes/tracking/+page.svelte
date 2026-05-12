@@ -111,6 +111,12 @@
 		if (userParcel.data?.parcel_info?.recipient_uid !== currentScan!.uin) {
 			otpStatus = 'Identity mismatch. This QR code does not match the parcel recipient.';
 			isLoading = false;
+			await client.mutation(api.attempts.logAttempt, {
+				locker_num: userParcel.data?.locker_num,
+				date: Date.now(),
+				uin: currentScan!.uin,
+				is_successful: false,
+			});
 			return;
 		}
 
@@ -135,6 +141,12 @@
 			if (authStatus) {
 				otpStatus = 'Unlocked';
 				await client.action(api.mqtt.publishCommand, { command: 'open' });
+				await client.mutation(api.attempts.logAttempt, {
+					locker_num: userParcel.data?.locker_num,
+					date: Date.now(),
+					uin: currentScan!.uin,
+					is_successful: true,
+				});
 			} else {
 				otpStatus = 'OTP Invalid';
 			}
