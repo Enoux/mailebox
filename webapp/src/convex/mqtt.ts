@@ -10,6 +10,7 @@ function toBase64(str: string): string {
 
 export const publishCommand = action({
 	args: {
+		ID: v.union(v.string(), v.number()),
 		command: v.union(v.literal('open'), v.literal('close'))
 	},
 	handler: async (ctx, args) => {
@@ -21,6 +22,7 @@ export const publishCommand = action({
 			throw new Error('EMQX Serverless API environment variables are not configured');
 		}
 
+		const id = typeof args.ID === 'string' ? parseInt(args.ID, 10) : args.ID;
 		const response = await fetch(`${emqxApiUrl}/publish`, {
 			method: 'POST',
 			headers: {
@@ -29,7 +31,7 @@ export const publishCommand = action({
 			},
 			body: JSON.stringify({
 				topic: 'esp32/commands',
-				payload: args.command,
+				payload: JSON.stringify({ ID: id, command: args.command }),
 				qos: 1
 			})
 		});
