@@ -6,7 +6,7 @@
 	const client = useConvexClient();
 
 	async function handleConfirm() {
-		await client.action(api.mqtt.publishCommand, { command: 'open' });
+		await client.action(api.mqtt.publishCommand, { ID: locker_num, command: 'open' });
 		isOverrideActive = false; // close the modal
 	}
 
