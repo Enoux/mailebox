@@ -20,7 +20,7 @@
 		}
 	}
 
-	function handleDelivery(track_id){
+	async function handleDelivery(track_id){
 		errorMsg = '';
 		try {
 			await client.mutation(api.parcels.updateParcel, {
