@@ -2,8 +2,9 @@
 import { action, mutation, query } from './_generated/server.js';
 import { v } from 'convex/values';
 import { api } from './_generated/api.js';
+import { publishToEmqx } from './mqtt';
 
-const PYTHON_URL = 'http://143.198.85.47:8000';
+const PYTHON_URL = 'http://10.161.15.18:8000';
 
 export const syncScan = action({
 	args: {},
@@ -82,7 +83,9 @@ export const verifyOtp = action({
 	args: {
 		uin: v.string(),
 		otp: v.string(),
-		transaction_id: v.string()
+		transaction_id: v.string(),
+		locker_num: v.number(),
+		tracking_num: v.string()
 	},
 	handler: async (ctx, args) => {
 		const response = await fetch(`${PYTHON_URL}/api/otp`, {
@@ -100,6 +103,31 @@ export const verifyOtp = action({
 		}
 
 		const data = await response.json();
-		return data;
+		const authStatus = data.authStatus as boolean;
+
+		if (authStatus) {
+			await publishToEmqx('esp32/commands', JSON.stringify({ command: 'success' }));
+			await publishToEmqx(
+				'esp32/commands',
+				JSON.stringify({ ID: args.locker_num, command: 'open' })
+			);
+
+			await ctx.runMutation(api.attempts.logAttempt, {
+				locker_num: args.locker_num,
+				date: Date.now(),
+				uin: args.uin,
+				is_successful: true
+			});
+
+			await ctx.runMutation(api.parcels.updateParcel, {
+				tracking_num: args.tracking_num,
+				status: 'Claimed'
+			});
+
+			return { authStatus: true, status: 'Unlocked' };
+		} else {
+			await publishToEmqx('esp32/commands', JSON.stringify({ command: 'failure' }));
+			return { authStatus: false, status: 'OTP Invalid' };
+		}
 	}
 });

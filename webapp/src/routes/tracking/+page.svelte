@@ -129,43 +129,20 @@
 		}
 
 		try {
-			// Manually sending a dummy QR string for testing the button
 			const result = await client.action(api.scanner.verifyOtp, {
 				uin: currentScan!.uin,
 				otp: otp,
-				transaction_id: currentScan!.transaction_id
+				transaction_id: currentScan!.transaction_id,
+				locker_num: userParcel.data?.locker_num,
+				tracking_num: tracking_num!
 			});
 
 			console.log('OTP RESULT', result);
-			const authStatus = result;
 
-			if (authStatus) {
-				otpStatus = 'Unlocked';
-				let timestamp = Date.now();
-				await client.action(api.mqtt.publishCommand, { ID: userParcel.data?.locker_num, command: 'open' });
-
-				// Logs successful claim attempt
-				await client.mutation(api.attempts.logAttempt, {
-					locker_num: userParcel.data?.locker_num,
-					date: timestamp,
-					uin: currentScan!.uin,
-					is_successful: true
-				});
-
-				// Updates parcel status to Claimed & adds claim date
-				await client.mutation(api.parcels.updateParcel, {
-					tracking_num: tracking_num!,
-					status: 'Claimed',
-					claim_date: timestamp,
-				});
-
-				// Updates mailbox status
-				await client.mutation(api.mailboxes.clearLocker, {
-					parcel_id: userParcel.data.parcel_info._id,
-				});
-        
+			if (result.authStatus) {
+				otpStatus = result.status;
 			} else {
-				otpStatus = 'OTP Invalid';
+				otpStatus = result.status;
 			}
 		} catch (err) {
 			console.error(err);

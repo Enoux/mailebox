@@ -1,10 +1,7 @@
-import base64
 import json
-import os
 import socket
 import time
 
-import requests
 import uvicorn
 from dynaconf import Dynaconf
 from fastapi import FastAPI, Request
@@ -17,37 +14,6 @@ authenticator = MOSIPAuthenticator(config=config)
 app = FastAPI()
 
 latest_scan = None
-
-
-def publish_command(cmd: str):
-    """
-    Publish a command to the ESP32 via EMQX HTTP API (MQTT over TLS).
-    Reads EMQX credentials from environment variables.
-    """
-    emqx_url = os.getenv("EMQX_API_URL")
-    app_id = os.getenv("EMQX_APP_ID")
-    app_secret = os.getenv("EMQX_APP_SECRET")
-
-    if not all([emqx_url, app_id, app_secret]):
-        print("Warning: EMQX env vars missing, skipping MQTT publish")
-        return
-
-    auth_str = base64.b64encode(f"{app_id}:{app_secret}".encode()).decode()
-
-    try:
-        resp = requests.post(
-            f"{emqx_url}/publish",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Basic {auth_str}",
-            },
-            json={"topic": "esp32/commands", "payload": cmd, "qos": 1},
-            timeout=5,
-        )
-        resp.raise_for_status()
-        print(f"Published to esp32/commands: {cmd}")
-    except Exception as e:
-        print(f"MQTT publish failed: {e}")
 
 
 def clear_expired_scan():
@@ -138,11 +104,7 @@ async def receive_otp(request: Request):
 
         global latest_scan
         if latest_scan and latest_scan["transaction_id"] == transaction_id:
-            if authStatus:
-                publish_command(json.dumps({"command": "success"}))
-            else:
-                publish_command(json.dumps({"command": "failure"}))
-            latest_scan = None  # Delete immediately after publishing
+            latest_scan = None  # Delete immediately after verifying
         else:
             print("Warning: OTP result for unknown/expired transaction")
 
