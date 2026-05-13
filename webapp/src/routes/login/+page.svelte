@@ -28,7 +28,7 @@
 		event.preventDefault();
 		try {
 			await authClient.signIn.email(
-				{ email, password, callbackURL: '/admin' },
+				{ email, password, callbackURL: '/redirect' },
 				{
 					onError: (ctx) => {
 						alert('Authentication error:' + ctx.error.message);
