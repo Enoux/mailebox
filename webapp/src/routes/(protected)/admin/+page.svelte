@@ -10,31 +10,36 @@
     claim_by: string;
 	};
 	const parcels = useQuery(api.parcels.getParcels, {});
+	const mailboxes = useQuery(api.mailboxes.getMailboxes, {});
 	
-	const notInUseParcel = $derived(parcels.data?.filter(p => p.status !== 'In_Locker') ?? []);
-	const inUseParcel = $derived(parcels.data?.filter(p => p.status === 'In_Locker') ?? []);
+	const notinUseMailbox = $derived(mailboxes.data?.filter(p => p.status == 'Available') ?? []);
+	const InUseMailbox = $derived(mailboxes.data?.filter(p => p.status == 'Unavailable') ?? []);
+	const inUseParcel = $derived(parcels.data?.filter(p => p.status == 'In Locker') ?? []);
+
 
 	const expiredParcel = $derived.by(() => {
 		return inUseParcel.filter((p) => {
 
 			const date_deli = new Date(p.in_locker_by);
 			const date_claim = new Date(p.claim_by);
-			const hrs = Math.floor((date_claim.getTime() - date_deli.getTime()) / 3600000);
-
-			return hrs < 0; 
+			return Math.floor((date_claim.getTime() - date_deli.getTime()))  < 0; 
 		});
 	});
-
 	const validParcel = $derived.by(() => {
 		return inUseParcel.filter((p) => {
 			
 			const date_deli = new Date(p.in_locker_by);
 			const date_claim = new Date(p.claim_by);
-			const hrs = Math.floor((date_claim.getTime() - date_deli.getTime()) / 3600000);
-
-			return hrs >= 0; 
+			return Math.floor((date_claim.getTime() - date_deli.getTime())) >= 0; 
 		});
 	});
+
+	const totalMailboxes = $derived.by(() => {
+			let value=mailboxes.data?.length
+			if (value) return value
+			else return 0
+		}
+	)
 
 	let isNavbarActive = $state(true);
 </script>
@@ -52,16 +57,16 @@
 				<div class="flex flex-row gap-x-5">
 					<div class="p-2 w-1/2 bg-green-100 rounded-lg">
 						<p class="font-medium"> Available Lockers </p>
-						<p> 4 </p>
+						<p> {notinUseMailbox.length} </p>
 					</div>
 
 					<div class="p-2 w-1/2 bg-red-100 rounded-lg">
 						<p class="font-medium"> Overdue Parcels </p>
-						<p> 5 </p>
+						<p> {expiredParcel.length} </p>
 					</div>
 				</div>
 
-				<PieChart />
+				<PieChart percent_avail={notinUseMailbox.length/totalMailboxes * 100} percent_occ={validParcel.length/totalMailboxes * 100} percent_over={expiredParcel.length/totalMailboxes * 100}/>
 			</div>
 			
 			<div class="w-1/2">
