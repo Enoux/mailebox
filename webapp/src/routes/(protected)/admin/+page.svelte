@@ -4,18 +4,21 @@
 	import PieChart from '$lib/components/pie_chart.svelte';
 	import { useQuery } from 'convex-svelte';
 	import { api } from '$convex/_generated/api.js';
+
 	type Parcel = {
     status: string;
     in_locker_by: string;
     claim_by: string;
 	};
+	
 	const parcels = useQuery(api.parcels.getParcels, {});
 	const mailboxes = useQuery(api.mailboxes.getMailboxes, {});
-	
+	const logs = useQuery(api.attempts.getAttempts,{});
+
 	const notinUseMailbox = $derived(mailboxes.data?.filter(p => p.status == 'Available') ?? []);
 	const InUseMailbox = $derived(mailboxes.data?.filter(p => p.status == 'Unavailable') ?? []);
 	const inUseParcel = $derived(parcels.data?.filter(p => p.status == 'In Locker') ?? []);
-
+	const FailedAttempts = $derived(logs.data?.filter(p => p.is_successful == false) ?? []);
 
 	const expiredParcel = $derived.by(() => {
 		return inUseParcel.filter((p) => {
@@ -39,7 +42,7 @@
 			if (value) return value
 			else return 0
 		}
-	)
+	);
 
 	let isNavbarActive = $state(true);
 </script>
@@ -81,8 +84,10 @@
 					</div>
 
 					<!-- Logs -->
-					<div class="p-2 flex w-full text-center">
-						<TableRow />
+					<div class="p-2 flex flex-col w-full text-center">
+						{#each FailedAttempts as attempt}
+							<TableRow locker_num={attempt.locker_number} attempt_date={attempt.attempt_date} scanner_uin={attempt.scanner_uin}/>
+						{/each}
 					</div>
 				</div>
 			</div>
