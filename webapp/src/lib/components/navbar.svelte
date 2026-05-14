@@ -12,9 +12,9 @@
 
 	let menus = $state([
 		{ label: 'Dashboard', icon: dashboard, icon_alt: 'Admin Dashboard', url: '/' },
-		{ label: 'Logs', icon: list, icon_alt: 'Admin Logs', url: 'logs' },
+		{ label: 'Parcels', icon: list, icon_alt: 'Admin Logs', url: 'logs' },
 		{ label: 'Mailboxes', icon: locker, icon_alt: 'Locker', url: 'mailboxes' },
-		{ label: 'Attempts', icon: list, icon_alt: 'Admin Attempts', url: 'attempts'}
+		{ label: 'Logs', icon: list, icon_alt: 'Admin Attempts', url: 'attempts'}
 	]);
 
 	let { active = $bindable() } = $props();
