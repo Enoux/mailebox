@@ -17,7 +17,7 @@ app = FastAPI()
 
 latest_scan = None
 
-MAX_RETRIES = 10
+MAX_RETRIES = 3
 TIMEOUT_SEC = 60
 
 
