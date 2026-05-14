@@ -1,10 +1,13 @@
 import asyncio
 import json
+import os
 import socket
 import time
 from concurrent.futures import TimeoutError  # alias for clarity
 
+import requests
 import uvicorn
+from dotenv import load_dotenv
 from dynaconf import Dynaconf
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -19,6 +22,10 @@ latest_scan = None
 
 MAX_RETRIES = 3
 TIMEOUT_SEC = 60
+
+load_dotenv()
+
+CONVEX_WEBHOOK = os.getenv("CONVEX_WEBHOOK_URL", "")
 
 
 async def _retry_with_timeout(fn, *args, **kwargs):
@@ -81,6 +88,22 @@ async def receive_scan(request: Request):
             "otp_response": otp_response_body,
             "scanned_at": time.time(),
         }
+
+        if CONVEX_WEBHOOK:
+            print("Sending webhook...")
+            try:
+                requests.post(
+                    CONVEX_WEBHOOK,
+                    json={
+                        "uin": data["uin"],
+                        "transaction_id": transaction_id,
+                        "status": "pending",
+                        "scanned_at": latest_scan["scanned_at"],
+                    },
+                    timeout=5,
+                )
+            except Exception as e:
+                print(f"Webhook failed: {e}")
 
         return JSONResponse(
             content={"status": "otp_sent", "transaction_id": transaction_id}
