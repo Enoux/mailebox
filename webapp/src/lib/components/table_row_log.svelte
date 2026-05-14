@@ -25,7 +25,7 @@
 		case 'In Storage':
 			date_of_action = storage_date;
 			break;
-		case 'Delivered':
+		case 'Sorting':
 			date_of_action = delivered_by;
 			break;
 		case 'In Transit':
