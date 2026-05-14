@@ -15,19 +15,15 @@
 	const mailboxes = useQuery(api.mailboxes.getMailboxes, {});
 	const logs = useQuery(api.attempts.getAttempts,{});
 
-	const notinUseMailbox = $derived(mailboxes.data?.filter(p => p.status == 'Available') ?? []);
-	const InUseMailbox = $derived(mailboxes.data?.filter(p => p.status == 'Unavailable') ?? []);
-	const inUseParcel = $derived(parcels.data?.filter(p => p.status == 'In Locker') ?? []);
-	const FailedAttempts = $derived(logs.data?.filter(p => p.is_successful == false) ?? []);
+	const notinUseMailbox = $derived(mailboxes.data?.filter((p) => p.status === 'Available') ?? []);
+	const InUseMailbox = $derived(mailboxes.data?.filter((p) => p.status === 'Unavailable') ?? []);
+	const inUseParcel = $derived(parcels.data?.filter((p) => p.status === 'In Locker') ?? []);
+	const FailedAttempts = $derived(logs.data?.filter((p) => p.is_successful === false) ?? []);
 
-	const expiredParcel = $derived.by(() => {
-		return inUseParcel.filter((p) => {
-
-			const date_deli = new Date(p.in_locker_by);
-			const date_claim = new Date(p.claim_by);
-			return Math.floor((date_claim.getTime() - date_deli.getTime()))  < 0; 
-		});
-	});
+	const expiredParcel = $derived(
+		inUseParcel.filter((p) => p.claim_by < p.in_locker_by)
+	);
+	
 	const validParcel = $derived.by(() => {
 		return inUseParcel.filter((p) => {
 			
@@ -37,12 +33,7 @@
 		});
 	});
 
-	const totalMailboxes = $derived.by(() => {
-			let value=mailboxes.data?.length
-			if (value) return value
-			else return 0
-		}
-	);
+	const totalMailboxes = $derived(mailboxes.data?.length ?? 0);
 
 	let isNavbarActive = $state(true);
 </script>
