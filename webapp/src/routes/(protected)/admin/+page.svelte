@@ -1,6 +1,40 @@
-<script>
+<script lang="ts">
 	import Navbar from '$lib/components/navbar.svelte';
 	import TableRow from '$lib/components/table_row_unsuccessful_logs.svelte';
+
+	import { useQuery } from 'convex-svelte';
+	import { api } from '$convex/_generated/api.js';
+	type Parcel = {
+    status: string;
+    in_locker_by: string;
+    claim_by: string;
+	};
+	const parcels = useQuery(api.parcels.getParcels, {});
+	
+	const notInUseParcel = $derived(parcels.data?.filter(p => p.status !== 'In_Locker') ?? []);
+	const inUseParcel = $derived(parcels.data?.filter(p => p.status === 'In_Locker') ?? []);
+
+	const expiredParcel = $derived.by(() => {
+		return inUseParcel.filter((p) => {
+
+			const date_deli = new Date(p.in_locker_by);
+			const date_claim = new Date(p.claim_by);
+			const hrs = Math.floor((date_claim.getTime() - date_deli.getTime()) / 3600000);
+
+			return hrs < 0; 
+		});
+	});
+
+	const validParcel = $derived.by(() => {
+		return inUseParcel.filter((p) => {
+			
+			const date_deli = new Date(p.in_locker_by);
+			const date_claim = new Date(p.claim_by);
+			const hrs = Math.floor((date_claim.getTime() - date_deli.getTime()) / 3600000);
+
+			return hrs >= 0; 
+		});
+	});
 
 	let isNavbarActive = $state(true);
 </script>
