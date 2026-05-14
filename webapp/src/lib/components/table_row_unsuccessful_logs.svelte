@@ -5,18 +5,8 @@
         attempt_date = 1234567,
         scanner_uin = '1234-4567-8901-2345',
 	} = $props();
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    };
 
-	let dateOfAttempt = new Date(attempt_date);
-    console.log(dateOfAttempt);
-    dateOfAttempt.toLocaleDateString(undefined, options);
-    let dateString = $derived(new Date(dateOfAttempt).toUTCString());
-    let dateArray = dateString.split(" ");
-    let finalDate = dateArray.slice(0, 4).join(" ");
+	let finalDate = $derived(new Date(attempt_date).toUTCString())
 </script>
 
 <div
