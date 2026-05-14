@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Navbar from '$lib/components/navbar.svelte';
 	import TableRow from '$lib/components/table_row_unsuccessful_logs.svelte';
+	import PieChart from '$lib/components/pie_chart.svelte';
 
 	import { useQuery } from 'convex-svelte';
 	import { api } from '$convex/_generated/api.js';
@@ -60,6 +61,8 @@
 						<p> 5 </p>
 					</div>
 				</div>
+
+				<PieChart />
 			</div>
 			
 			<div class="w-1/2">
