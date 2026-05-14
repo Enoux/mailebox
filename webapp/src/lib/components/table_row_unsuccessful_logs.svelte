@@ -10,7 +10,7 @@
       month: 'long',
       day: 'numeric'
     };
-	// svelte-ignore state_referenced_locally
+
 	let dateOfAttempt = new Date(attempt_date);
     console.log(dateOfAttempt);
     dateOfAttempt.toLocaleDateString(undefined, options);
