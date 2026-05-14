@@ -1,8 +1,13 @@
+import asyncio
 import json
+import os
 import socket
 import time
+from concurrent.futures import TimeoutError  # alias for clarity
 
+import requests
 import uvicorn
+from dotenv import load_dotenv
 from dynaconf import Dynaconf
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -14,6 +19,30 @@ authenticator = MOSIPAuthenticator(config=config)
 app = FastAPI()
 
 latest_scan = None
+
+MAX_RETRIES = 3
+TIMEOUT_SEC = 60
+
+load_dotenv()
+
+CONVEX_WEBHOOK = os.getenv("CONVEX_WEBHOOK_URL", "")
+
+
+async def _retry_with_timeout(fn, *args, **kwargs):
+    last_exc = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            return await asyncio.wait_for(
+                asyncio.to_thread(fn, *args, **kwargs), timeout=TIMEOUT_SEC
+            )
+        except asyncio.TimeoutError as e:
+            last_exc = e
+            print(f"Timeout attempt {attempt}/{MAX_RETRIES} for {fn.__name__}")
+        except Exception as e:
+            last_exc = e
+            print(f"Error attempt {attempt}/{MAX_RETRIES} for {fn.__name__}: {e}")
+            break  # non-timeout error: don't retry
+    raise last_exc
 
 
 def clear_expired_scan():
@@ -41,7 +70,8 @@ async def receive_scan(request: Request):
         latest_scan = None  # Only 1 scan at a time
         clear_expired_scan()
 
-        otp_response = authenticator.genotp(
+        otp_response = await _retry_with_timeout(
+            authenticator.genotp,
             individual_id=data["uin"],
             individual_id_type="UIN",
             email=True,
@@ -58,6 +88,22 @@ async def receive_scan(request: Request):
             "otp_response": otp_response_body,
             "scanned_at": time.time(),
         }
+
+        if CONVEX_WEBHOOK:
+            print("Sending webhook...")
+            try:
+                requests.post(
+                    CONVEX_WEBHOOK,
+                    json={
+                        "uin": data["uin"],
+                        "transaction_id": transaction_id,
+                        "status": "pending",
+                        "scanned_at": latest_scan["scanned_at"],
+                    },
+                    timeout=5,
+                )
+            except Exception as e:
+                print(f"Webhook failed: {e}")
 
         return JSONResponse(
             content={"status": "otp_sent", "transaction_id": transaction_id}
@@ -91,7 +137,8 @@ async def receive_otp(request: Request):
         otp = data["otp"]
         transaction_id = data["transaction_id"]
 
-        response = authenticator.auth(
+        response = await _retry_with_timeout(
+            authenticator.auth,
             individual_id=uin,
             individual_id_type="UIN",
             otp_value=otp,

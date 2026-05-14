@@ -6,7 +6,6 @@
 	import { useConvexClient, useQuery } from 'convex-svelte';
 	import { api } from '$convex/_generated/api.js';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 
 	// for expandable tracking details
@@ -72,21 +71,8 @@
 	// For QR scanning (auth)
 	let otpStatus = $state('');
 	let isLoading = $state(false);
-	const latestScanQuery = $derived(useQuery(api.scanner.getLatestScan, {}));
+	let latestScanQuery = $state(useQuery(api.scanner.getLatestScan, {}));
 	let currentScan = $derived(latestScanQuery.data ?? null);
-	$inspect(currentScan);
-
-	// Poll Python service in the background to keep Convex DB updated
-	let scanInterval: ReturnType<typeof setInterval>;
-
-	onMount(() => {
-		scanInterval = setInterval(() => {
-			client.action(api.scanner.syncScan, {}).catch((err) => {
-				console.error('Failed to sync scan:', err);
-			});
-		}, 2000);
-		return () => clearInterval(scanInterval);
-	});
 
 	function isScanExpired(scan) {
 		const threeMinutes = 3 * 60 * 1000;
