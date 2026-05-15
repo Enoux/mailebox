@@ -76,8 +76,8 @@
 
 					<!-- Logs -->
 					<div class="p-2 flex flex-col w-full text-center">
-						{#each FailedAttempts as attempt}
-							<TableRow locker_num={attempt.locker_number} attempt_date={attempt.attempt_date} scanner_uin={attempt.scanner_uin}/>
+						{#each FailedAttempts as attempt (attempt)}
+							<TableRow locker_num={attempt.locker_number} attempt_date={attempt.attempt_date} scanner_uin={attempt.uin}/>
 						{/each}
 					</div>
 				</div>
