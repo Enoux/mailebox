@@ -4,6 +4,7 @@
 	import PieChart from '$lib/components/pie_chart.svelte';
 	import { useQuery } from 'convex-svelte';
 	import { api } from '$convex/_generated/api.js';
+	import { onMount } from 'svelte';
 
 	type Parcel = {
     status: string;
@@ -60,7 +61,13 @@
 					</div>
 				</div>
 
-				<PieChart percent_avail={notinUseMailbox.length/totalMailboxes * 100} percent_occ={validParcel.length/totalMailboxes * 100} percent_over={expiredParcel.length/totalMailboxes * 100}/>
+				{#if parcels.isLoading || mailboxes.isLoading || logs.isLoading}
+					<p>loading...</p>
+				{:else if parcels.error || mailboxes.error || logs.error}
+					<p>error</p>
+				{:else}
+					<PieChart percent_avail={notinUseMailbox.length/totalMailboxes * 100} percent_occ={validParcel.length/totalMailboxes * 100} percent_over={expiredParcel.length/totalMailboxes * 100}/>
+				{/if}
 			</div>
 			
 			<div class="w-1/2">
