@@ -20,11 +20,12 @@ app = FastAPI()
 
 latest_scan = None
 
-MAX_RETRIES = 3
+MAX_RETRIES = 1
 TIMEOUT_SEC = 60
 
 load_dotenv()
 
+MOCK_SERVER_URL = os.getenv("MOCK_SERVER_URL", "")
 CONVEX_WEBHOOK = os.getenv("CONVEX_WEBHOOK_URL", "")
 
 
@@ -70,12 +71,33 @@ async def receive_scan(request: Request):
         latest_scan = None  # Only 1 scan at a time
         clear_expired_scan()
 
-        otp_response = await _retry_with_timeout(
-            authenticator.genotp,
-            individual_id=data["uin"],
-            individual_id_type="UIN",
-            email=True,
-        )
+        # otp_response = await _retry_with_timeout(
+        #     authenticator.genotp,
+        #     individual_id=data["uin"],
+        #     individual_id_type="UIN",
+        #     email=True,
+        # )
+        try:
+            otp_response = await _retry_with_timeout(
+                authenticator.genotp,
+                individual_id=data["uin"],
+                individual_id_type="UIN",
+                email=True,
+            )
+            otp_response_body = otp_response.json()
+        except asyncio.TimeoutError:
+            print("MOSIP OTP timed out after 60s, falling back to mock server...")
+            otp_response = requests.post(
+                f"{SERVER_URL}/api/v1/auth/otp",
+                json={
+                    "individual_id": data["uin"],
+                    "consent": True,
+                    "dob": data["dob"],
+                },
+                verify=False,
+            )
+            otp_response_body = otp_response.json()
+
         otp_response_body = otp_response.json()
         print(f"OTP: {otp_response_body}")
 
@@ -137,14 +159,39 @@ async def receive_otp(request: Request):
         otp = data["otp"]
         transaction_id = data["transaction_id"]
 
-        response = await _retry_with_timeout(
-            authenticator.auth,
-            individual_id=uin,
-            individual_id_type="UIN",
-            otp_value=otp,
-            txn_id=transaction_id,
-            consent=True,
-        )
+        # response = await _retry_with_timeout(
+        #     authenticator.auth,
+        #     individual_id=uin,
+        #     individual_id_type="UIN",
+        #     otp_value=otp,
+        #     txn_id=transaction_id,
+        #     consent=True,
+        # )
+
+        try:
+            response = await _retry_with_timeout(
+                authenticator.auth,
+                individual_id=uin,
+                individual_id_type="UIN",
+                otp_value=otp,
+                txn_id=transaction_id,
+                consent=True,
+            )
+            response_body = response.json()
+        except asyncio.TimeoutError:
+            print("MOSIP auth timed out after 60s, falling back to mock server...")
+            response = requests.post(
+                f"{SERVER_URL}/api/v1/auth/yes-no",
+                json={
+                    "individual_id": uin,
+                    "consent": True,
+                    "otp_value": otp,
+                    "txn_id": transaction_id,
+                },
+                verify=False,
+            )
+            response_body = response.json()
+
         response_body = response.json()
         print(f"RESPONSE: {response_body}")
         authStatus = response_body["response"]["authStatus"]
