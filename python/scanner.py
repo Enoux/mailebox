@@ -25,7 +25,7 @@ TIMEOUT_SEC = 60
 
 load_dotenv()
 
-MOCK_SERVER_URL = os.getenv("MOCK_SERVER_URL", "")
+SERVER_URL = os.getenv("MOCK_SERVER_URL", "")
 CONVEX_WEBHOOK = os.getenv("CONVEX_WEBHOOK_URL", "")
 
 
